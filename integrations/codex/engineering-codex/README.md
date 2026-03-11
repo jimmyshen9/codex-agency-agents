@@ -1,17 +1,17 @@
-# engineering-codex
+﻿# engineering-codex
 
 这是一个面向 Codex 的精选工程插件式 bundle。
 
-设计思路借鉴了 Anthropic 的 `knowledge-work-plugins` 工程插件分层方式：
+设计思路借鉴了 Anthropic `knowledge-work-plugins` 的工程插件分层方式：
 
 - `skills/` 放高质量精选技能
 - `commands/` 放可复用的工程工作流模板
 - `connectors/` 放连接器和 MCP 配置模板
 - `AGENTS.md` 放项目级选择规则
 
-但实现方式改成了 Codex 可直接使用的形式：
+实现方式改成了 Codex 可直接使用的形式：
 
-- 所有技能都是 `SKILL.md`
+- 所有技能都以 `SKILL.md` 形式存在
 - 所有说明优先中文
 - 不使用 emoji
 - 面向 Codex 的代码编辑、调试、审查、发布和事故处理
@@ -28,10 +28,18 @@
 
 ## 安装
 
-在仓库根目录执行：
+默认安装命令：
 
 ```bash
-python scripts/install_codex.py --bundle engineering-codex
+python scripts/install_codex.py
+```
+
+这会安装 `engineering-codex`。
+
+如果你还需要运行稳定性、监控和额度保护相关技能，建议一起安装 `ops-codex`：
+
+```bash
+python scripts/install_codex.py --bundle engineering-codex --bundle ops-codex
 ```
 
 如果只想安装到临时目录测试：
@@ -39,6 +47,8 @@ python scripts/install_codex.py --bundle engineering-codex
 ```bash
 python scripts/install_codex.py --bundle engineering-codex --dest .tmp-engineering-codex
 ```
+
+安装完成后，重启 Codex 让新技能生效。
 
 ## 使用
 

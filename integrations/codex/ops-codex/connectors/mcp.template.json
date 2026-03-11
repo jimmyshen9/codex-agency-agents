@@ -1,0 +1,25 @@
+﻿{
+  "connector_name": "example-runtime-connector",
+  "purpose": "接入运行态输入源或监控系统",
+  "base_url": "https://example.internal/api",
+  "auth": {
+    "type": "header",
+    "header_name": "Authorization",
+    "secret_env": "EXAMPLE_API_TOKEN"
+  },
+  "limits": {
+    "rate_limit": "按供应商文档填写",
+    "cost_limit": "按项目预算填写"
+  },
+  "failure_policy": {
+    "retry": "仅对短时网络错误重试",
+    "cooldown_seconds": 300,
+    "circuit_breaker": true
+  },
+  "evidence_fields": [
+    "request_id",
+    "event_time",
+    "status_code",
+    "error_message"
+  ]
+}

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Install Codex skills into ~/.codex/skills."""
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from pathlib import Path
 BUNDLE_PATHS = {
     "full": Path("integrations") / "codex" / "skills",
     "engineering-codex": Path("integrations") / "codex" / "engineering-codex" / "skills",
+    "ops-codex": Path("integrations") / "codex" / "ops-codex" / "skills",
 }
 
 
@@ -37,13 +38,25 @@ def install(src_root: Path, dest_root: Path) -> int:
     return count
 
 
+def _normalize_bundle_names(bundle_names: list[str] | None) -> list[str]:
+    ordered: list[str] = []
+    for name in bundle_names or []:
+        if name not in ordered:
+            ordered.append(name)
+    return ordered or ["engineering-codex"]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Install Codex skills into ~/.codex/skills.")
     parser.add_argument(
         "--bundle",
         choices=sorted(BUNDLE_PATHS),
-        default="full",
-        help="Named Codex skill bundle to install. Ignored when --src is provided.",
+        action="append",
+        default=None,
+        help=(
+            "Named Codex skill bundle to install. Can be specified multiple times. "
+            "Ignored when --src is provided. Default: engineering-codex."
+        ),
     )
     parser.add_argument(
         "--src",
@@ -59,12 +72,19 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    src = args.src
-    if src is None:
-        src = detect_repo_root() / BUNDLE_PATHS[args.bundle]
+    if args.src is not None:
+        count = install(args.src, args.dest)
+        print(f"installed_codex_skills={count}")
+        print(f"installed_codex_source={args.src}")
+        return
 
-    count = install(src, args.dest)
-    print(f"installed_codex_skills={count}")
+    repo_root = detect_repo_root()
+    bundles = _normalize_bundle_names(args.bundle)
+    total = 0
+    for bundle in bundles:
+        total += install(repo_root / BUNDLE_PATHS[bundle], args.dest)
+    print(f"installed_codex_skills={total}")
+    print(f"installed_codex_bundles={','.join(bundles)}")
 
 
 if __name__ == "__main__":
