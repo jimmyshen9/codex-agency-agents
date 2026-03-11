@@ -1,0 +1,24 @@
+{
+  "servers": {
+    "github": {
+      "description": "代码仓库和 PR 数据",
+      "command": "your-github-mcp-command",
+      "args": []
+    },
+    "issue_tracker": {
+      "description": "任务系统，例如 Jira 或 Linear",
+      "command": "your-issue-tracker-mcp-command",
+      "args": []
+    },
+    "monitoring": {
+      "description": "监控系统，例如 Grafana、Datadog、Sentry",
+      "command": "your-monitoring-mcp-command",
+      "args": []
+    },
+    "docs": {
+      "description": "知识库或文档系统",
+      "command": "your-docs-mcp-command",
+      "args": []
+    }
+  }
+}

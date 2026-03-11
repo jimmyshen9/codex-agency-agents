@@ -502,6 +502,25 @@ See [integrations/codex/README.md](integrations/codex/README.md) for details.
 </details>
 
 <details>
+<summary><strong>Codex Curated Engineering Bundle</strong></summary>
+
+If you want a smaller Codex-first engineering pack instead of the full set, install:
+
+```bash
+python scripts/install_codex.py --bundle engineering-codex
+```
+
+It includes:
+
+- curated high-quality engineering skills
+- project `AGENTS.md`
+- workflow templates in `commands/`
+- connector templates in `connectors/`
+
+See [integrations/codex/engineering-codex/README.md](integrations/codex/engineering-codex/README.md) for details.
+</details>
+
+<details>
 <summary><strong>Claude Code</strong></summary>
 
 Agents are copied directly from the repo into `~/.claude/agents/` -- no conversion needed.

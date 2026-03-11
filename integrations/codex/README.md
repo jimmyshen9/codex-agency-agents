@@ -57,3 +57,20 @@ integrations/codex/skills/
 
 The generated `SKILL.md` keeps the original Agency persona, rules, workflows,
 and deliverables, while wrapping them in Codex-compatible skill frontmatter.
+
+## Curated Bundle
+
+If you do not want the full 112-skill set, use the curated engineering bundle:
+
+```bash
+python scripts/install_codex.py --bundle engineering-codex
+```
+
+It lives under `integrations/codex/engineering-codex/` and includes:
+
+- a smaller high-quality engineering skill set
+- project-level `AGENTS.md`
+- `commands/` workflow templates for review, debug, architecture, release, and incidents
+- `connectors/` MCP and external system templates
+
+See [engineering-codex/README.md](engineering-codex/README.md) for details.

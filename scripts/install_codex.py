@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Install generated Codex skills into ~/.codex/skills."""
+"""Install Codex skills into ~/.codex/skills."""
 
 from __future__ import annotations
 
 import argparse
 import shutil
 from pathlib import Path
+
+
+BUNDLE_PATHS = {
+    "full": Path("integrations") / "codex" / "skills",
+    "engineering-codex": Path("integrations") / "codex" / "engineering-codex" / "skills",
+}
 
 
 def detect_repo_root() -> Path:
@@ -34,9 +40,15 @@ def install(src_root: Path, dest_root: Path) -> int:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Install Codex skills into ~/.codex/skills.")
     parser.add_argument(
+        "--bundle",
+        choices=sorted(BUNDLE_PATHS),
+        default="full",
+        help="Named Codex skill bundle to install. Ignored when --src is provided.",
+    )
+    parser.add_argument(
         "--src",
         type=Path,
-        default=detect_repo_root() / "integrations" / "codex" / "skills",
+        default=None,
         help="Source skills directory.",
     )
     parser.add_argument(
@@ -47,7 +59,11 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    count = install(args.src, args.dest)
+    src = args.src
+    if src is None:
+        src = detect_repo_root() / BUNDLE_PATHS[args.bundle]
+
+    count = install(src, args.dest)
     print(f"installed_codex_skills={count}")
 
 

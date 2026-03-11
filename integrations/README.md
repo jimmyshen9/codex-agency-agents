@@ -51,6 +51,9 @@ Codex skills are generated into `integrations/codex/skills/` and install to
 
 See [codex/README.md](codex/README.md) for details.
 
+For a smaller curated set, use the engineering bundle under
+`integrations/codex/engineering-codex/`.
+
 ---
 
 ## Claude Code
