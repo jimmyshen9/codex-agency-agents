@@ -10,6 +10,7 @@
 #   ./scripts/convert.sh [--tool <name>] [--out <dir>] [--help]
 #
 # Tools:
+#   codex        - Codex skill folders (~/.codex/skills/)
 #   antigravity  — Antigravity skill files (~/.gemini/antigravity/skills/)
 #   gemini-cli   — Gemini CLI extension (skills/ + gemini-extension.json)
 #   opencode     — OpenCode agent files (.opencode/agent/*.md)
@@ -85,6 +86,7 @@ convert_antigravity() {
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  description="$(printf '%s' "$description" | sed 's/[[:space:]]*$//; s/[.][.]*$//')"
   slug="agency-$(slugify "$name")"
   body="$(get_body "$file")"
 
@@ -124,6 +126,32 @@ convert_gemini_cli() {
 name: ${slug}
 description: ${description}
 ---
+${body}
+HEREDOC
+}
+
+convert_codex() {
+  local file="$1"
+  local name description slug outdir outfile body
+
+  name="$(get_field "name" "$file")"
+  description="$(get_field "description" "$file")"
+  slug="agency-$(slugify "$name")"
+  body="$(get_body "$file")"
+
+  outdir="$OUT_DIR/codex/skills/$slug"
+  outfile="$outdir/SKILL.md"
+  mkdir -p "$outdir"
+
+  cat > "$outfile" <<HEREDOC
+---
+name: ${slug}
+description: ${description}. Use when Codex should adopt the ${name} specialist role from The Agency for tasks in this domain.
+---
+# ${name}
+
+Adopt the ${name} role and follow the persona, operating rules, deliverables, and workflows below.
+
 ${body}
 HEREDOC
 }
@@ -382,6 +410,7 @@ run_conversions() {
       [[ -n "$name" ]] || continue
 
       case "$tool" in
+        codex)       convert_codex       "$file" ;;
         antigravity) convert_antigravity "$file" ;;
         gemini-cli)  convert_gemini_cli  "$file" ;;
         opencode)    convert_opencode    "$file" ;;
@@ -422,7 +451,7 @@ main() {
     esac
   done
 
-  local valid_tools=("antigravity" "gemini-cli" "opencode" "cursor" "aider" "windsurf" "openclaw" "all")
+  local valid_tools=("codex" "antigravity" "gemini-cli" "opencode" "cursor" "aider" "windsurf" "openclaw" "all")
   local valid=false
   for t in "${valid_tools[@]}"; do [[ "$t" == "$tool" ]] && valid=true && break; done
   if ! $valid; then
@@ -438,7 +467,7 @@ main() {
 
   local tools_to_run=()
   if [[ "$tool" == "all" ]]; then
-    tools_to_run=("antigravity" "gemini-cli" "opencode" "cursor" "aider" "windsurf" "openclaw")
+    tools_to_run=("codex" "antigravity" "gemini-cli" "opencode" "cursor" "aider" "windsurf" "openclaw")
   else
     tools_to_run=("$tool")
   fi

@@ -10,6 +10,7 @@
 #   ./scripts/install.sh [--tool <name>] [--interactive] [--no-interactive] [--help]
 #
 # Tools:
+#   codex        -- Copy skills to ~/.codex/skills/
 #   claude-code  -- Copy agents to ~/.claude/agents/
 #   copilot      -- Copy agents to ~/.github/agents/
 #   antigravity  -- Copy skills to ~/.gemini/antigravity/skills/
@@ -81,7 +82,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 INTEGRATIONS="$REPO_ROOT/integrations"
 
-ALL_TOOLS=(claude-code copilot antigravity gemini-cli opencode openclaw cursor aider windsurf)
+ALL_TOOLS=(codex claude-code copilot antigravity gemini-cli opencode openclaw cursor aider windsurf)
 
 # ---------------------------------------------------------------------------
 # Usage
@@ -104,6 +105,7 @@ check_integrations() {
 # ---------------------------------------------------------------------------
 # Tool detection
 # ---------------------------------------------------------------------------
+detect_codex()       { [[ -d "${HOME}/.codex" ]]; }
 detect_claude_code() { [[ -d "${HOME}/.claude" ]]; }
 detect_copilot()      { command -v code >/dev/null 2>&1 || [[ -d "${HOME}/.github" ]]; }
 detect_antigravity()  { [[ -d "${HOME}/.gemini/antigravity/skills" ]]; }
@@ -116,6 +118,7 @@ detect_windsurf()     { command -v windsurf >/dev/null 2>&1 || [[ -d "${HOME}/.c
 
 is_detected() {
   case "$1" in
+    codex)       detect_codex       ;;
     claude-code) detect_claude_code ;;
     copilot)     detect_copilot     ;;
     antigravity) detect_antigravity ;;
@@ -132,6 +135,7 @@ is_detected() {
 # Fixed-width labels: name (14) + detail (24) = 38 visible chars
 tool_label() {
   case "$1" in
+    codex)       printf "%-14s  %s" "Codex"        "(~/.codex/skills)"       ;;
     claude-code) printf "%-14s  %s" "Claude Code"  "(claude.ai/code)"        ;;
     copilot)     printf "%-14s  %s" "Copilot"      "(~/.github/agents)"      ;;
     antigravity) printf "%-14s  %s" "Antigravity"  "(~/.gemini/antigravity)" ;;
@@ -280,6 +284,23 @@ install_claude_code() {
   ok "Claude Code: $count agents -> $dest"
 }
 
+install_codex() {
+  local src="$INTEGRATIONS/codex/skills"
+  local dest="${HOME}/.codex/skills"
+  local count=0
+  [[ -d "$src" ]] || { err "integrations/codex missing. Run convert.sh first."; return 1; }
+  mkdir -p "$dest"
+  local d
+  while IFS= read -r -d '' d; do
+    local name; name="$(basename "$d")"
+    mkdir -p "$dest/$name"
+    cp "$d/SKILL.md" "$dest/$name/SKILL.md"
+    (( count++ )) || true
+  done < <(find "$src" -mindepth 1 -maxdepth 1 -type d -print0)
+  ok "Codex: $count skills -> $dest"
+  warn "Codex: optionally copy integrations/codex/AGENTS.template.md into a project as AGENTS.md."
+}
+
 install_copilot() {
   local dest="${HOME}/.github/agents"
   local count=0
@@ -412,6 +433,7 @@ install_windsurf() {
 
 install_tool() {
   case "$1" in
+    codex)       install_codex       ;;
     claude-code) install_claude_code ;;
     copilot)     install_copilot     ;;
     antigravity) install_antigravity ;;

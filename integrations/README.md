@@ -5,6 +5,7 @@ compatible with popular agentic coding tools.
 
 ## Supported Tools
 
+- **[Codex](#codex)** — `SKILL.md` per agent in `codex/`
 - **[Claude Code](#claude-code)** — `.md` agents, use the repo directly
 - **[Antigravity](#antigravity)** — `SKILL.md` per agent in `antigravity/`
 - **[Gemini CLI](#gemini-cli)** — extension + `SKILL.md` files in `gemini-cli/`
@@ -20,6 +21,7 @@ compatible with popular agentic coding tools.
 ./scripts/install.sh
 
 # Install for a specific tool
+./scripts/install.sh --tool codex
 ./scripts/install.sh --tool antigravity
 ./scripts/install.sh --tool gemini-cli
 ./scripts/install.sh --tool cursor
@@ -35,6 +37,19 @@ If you add or modify agents, regenerate all integration files:
 ```bash
 ./scripts/convert.sh
 ```
+
+---
+
+## Codex
+
+Codex skills are generated into `integrations/codex/skills/` and install to
+`~/.codex/skills/`.
+
+```bash
+./scripts/install.sh --tool codex
+```
+
+See [codex/README.md](codex/README.md) for details.
 
 ---
 
